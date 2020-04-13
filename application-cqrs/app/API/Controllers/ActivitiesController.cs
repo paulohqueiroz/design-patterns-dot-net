@@ -27,5 +27,21 @@ namespace API.Controllers
             return await _mediator.Send(new Application.Actitivities.List.Query());
 
         }
+
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Activity>> Details(Guid id)
+        {
+            return await _mediator.Send(new Application.Actitivities.Details.Query{ Id = id });
+
+        }
+
+        //frombody - se não usar ApiController, pra usar as propriedades desse request
+        [HttpPost]
+        public async Task<ActionResult<Unit>> Create([FromBody]Application.Actitivities.Create.Command command) 
+        {
+            return await _mediator.Send(command);        
+        }
+
     }
 }
