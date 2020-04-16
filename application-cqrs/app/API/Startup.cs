@@ -40,6 +40,8 @@ namespace API
                 })
             );
 
+            services.AddControllers().AddJsonOptions(opts => opts.JsonSerializerOptions.PropertyNamingPolicy = null);
+
             services.AddMediatR(typeof(Application.Actitivities.List.Handler).Assembly);
 
             services.AddControllers();
