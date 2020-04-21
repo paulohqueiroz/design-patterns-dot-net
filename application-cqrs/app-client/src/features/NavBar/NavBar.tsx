@@ -10,7 +10,7 @@ const NavBar : React.FC<IProps> = ({openCreateForm}) => {
         <Menu fixed="top" inverted>
             <Container>
                 <Menu.Item header>
-                    <img src="/assets/logo.png" alt="logo" style={ { marginRight : 10}} />
+                    <img src="/assets/Images/logo.png" alt="logo" style={ { marginRight : 10}} />
                     Activities
                 </Menu.Item>
                 <Menu.Item name="Activities"></Menu.Item>
