@@ -6,6 +6,8 @@ import { IActivity  } from "../models/IActivity";
 import  NavBar from "./NavBar/NavBar";
 import ActivityDashboard from './activities/dashboard/ActivityDashboard';
 
+//lição 62
+
 const App = () => {
 
     const [ activities, setActivities ] = useState<IActivity[]>([]);
@@ -16,6 +18,11 @@ const App = () => {
     }
 
     const [editMode, setEditMode] = useState(false);
+
+    const handleOpenCreateForm = () => {
+      setSelectActivity(null);
+      setEditMode(true);
+    }
 
     useEffect( () => {
       axios
@@ -28,7 +35,7 @@ const App = () => {
     
     return (
       <Fragment>
-         <NavBar />
+         <NavBar openCreateForm={handleOpenCreateForm} />
          <Container style={{ marginTop: "7em" }}>
           <ActivityDashboard activities={activities}  
           selectActivity={handleSelectActivity} 
