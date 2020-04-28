@@ -1,10 +1,11 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import '../app/layouts/styles.css';
-import axios from "axios";
 import { Container } from 'semantic-ui-react';
 import { IActivity } from "../models/IActivity";
 import NavBar from "./NavBar/NavBar";
 import ActivityDashboard from './activities/dashboard/ActivityDashboard';
+import agent from '../app/services/agent';
+
 
 const App = () => {
 
@@ -24,27 +25,32 @@ const App = () => {
   }
 
   useEffect(() => {
-    axios
-      .get<IActivity[]>("http://localhost:5000/api/activities")
+    agent.Activities.list()
       .then((response) => {
-        setActivities(response.data);
+        setActivities(response);
       });
   }, []);
 
   const handleCreateActivity = (activity: IActivity) => {
-    setActivities([...activities, activity]);
-    setSelectActivity(activity);
-    setEditMode(false);
+    agent.Activities.create(activity).then(()=>{
+      setActivities([...activities, activity]);
+      setSelectActivity(activity);
+      setEditMode(false);
+    });   
   }
 
   const handleEditActivity = (activity: IActivity) => {
-    setActivities([...activities.filter(a => a.Id !== activity.Id), activity])
-    setSelectActivity(activity);
-    setEditMode(false);
+    agent.Activities.update(activity).then(()=>{
+      setActivities([...activities.filter(a => a.Id !== activity.Id), activity])
+      setSelectActivity(activity);
+      setEditMode(false);
+    });   
   }
 
   const handleDeleteActivity = (id: string) => {
-    setActivities([...activities.filter(a => a.Id !== id)])
+    agent.Activities.delete(id).then(()=>{
+      setActivities([...activities.filter(a => a.Id !== id)])
+    });
   }
 
   return (
