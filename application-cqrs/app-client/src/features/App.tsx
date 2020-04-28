@@ -5,6 +5,7 @@ import { IActivity } from "../models/IActivity";
 import NavBar from "./NavBar/NavBar";
 import ActivityDashboard from './activities/dashboard/ActivityDashboard';
 import agent from '../app/services/agent';
+import LoadingComponent from '../app/layouts/LoadingComponent';
 
 
 const App = () => {
@@ -18,6 +19,7 @@ const App = () => {
   }
 
   const [editMode, setEditMode] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const handleOpenCreateForm = () => {
     setSelectActivity(null);
@@ -28,8 +30,12 @@ const App = () => {
     agent.Activities.list()
       .then((response) => {
         setActivities(response);
+      }).then(() => {
+        setLoading(false);
       });
   }, []);
+
+  if(loading) return <LoadingComponent content="loading appication..."/>
 
   const handleCreateActivity = (activity: IActivity) => {
     agent.Activities.create(activity).then(()=>{
