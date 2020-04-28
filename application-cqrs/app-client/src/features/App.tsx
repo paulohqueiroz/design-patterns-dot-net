@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState, useEffect, Fragment, SyntheticEvent } from 'react';
 import '../app/layouts/styles.css';
 import { Container } from 'semantic-ui-react';
 import { IActivity } from "../models/IActivity";
@@ -20,6 +20,8 @@ const App = () => {
 
   const [editMode, setEditMode] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [target, setTarget] = useState('');
 
   const handleOpenCreateForm = () => {
     setSelectActivity(null);
@@ -38,11 +40,12 @@ const App = () => {
   if(loading) return <LoadingComponent content="loading appication..."/>
 
   const handleCreateActivity = (activity: IActivity) => {
+    setSubmitting(true);
     agent.Activities.create(activity).then(()=>{
       setActivities([...activities, activity]);
       setSelectActivity(activity);
       setEditMode(false);
-    });   
+    }).then(()=> setSubmitting(false));   
   }
 
   const handleEditActivity = (activity: IActivity) => {
@@ -50,13 +53,17 @@ const App = () => {
       setActivities([...activities.filter(a => a.Id !== activity.Id), activity])
       setSelectActivity(activity);
       setEditMode(false);
-    });   
+    }).then(()=> setSubmitting(false));    
   }
 
-  const handleDeleteActivity = (id: string) => {
+  const handleDeleteActivity = (event: SyntheticEvent<HTMLButtonElement>,id: string) => {
+ 
+    setSubmitting(true);
+    setTarget(event.currentTarget.name);
+
     agent.Activities.delete(id).then(()=>{
       setActivities([...activities.filter(a => a.Id !== id)])
-    });
+    }).then(()=> setSubmitting(false));  
   }
 
   return (
@@ -73,6 +80,8 @@ const App = () => {
           createActivity={handleCreateActivity}
           editActivity={handleEditActivity}
           deleteActivity={handleDeleteActivity}
+          target={target}
+          submitting={submitting}
         />
       </Container>
     </Fragment>
