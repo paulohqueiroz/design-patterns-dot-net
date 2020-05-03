@@ -15,20 +15,12 @@ const App = () => {
   const [activities, setActivities] = useState<IActivity[]>([]);
   const [selectedActivity, setSelectActivity] = useState<IActivity | null>(null);
 
-  const handleSelectActivity = (id: string) => {
-    setSelectActivity(activities.filter((a) => a.Id === id)[0]);
-    setEditMode(false);
-  }
-
   const [editMode, setEditMode] = useState(false);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [target, setTarget] = useState('');
 
-  const handleOpenCreateForm = () => {
-    setSelectActivity(null);
-    setEditMode(true);
-  }
+ 
 
   useEffect(() => {
     activityStore.loadActivities();
@@ -65,15 +57,12 @@ const App = () => {
 
   return (
     <Fragment>
-      <NavBar openCreateForm={handleOpenCreateForm} />
+      <NavBar />
       <Container style={{ marginTop: "7em" }}>
          <ActivityDashboard
           activities={activityStore.activities}
-          selectActivity={handleSelectActivity}
-      
           setEditMode={setEditMode}
           setSelectActivity={setSelectActivity}
-          createActivity={handleCreateActivity}
           editActivity={handleEditActivity}
           deleteActivity={handleDeleteActivity}
           target={target}
