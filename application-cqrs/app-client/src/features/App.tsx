@@ -12,7 +12,6 @@ import ActivityStore from '../app/stores/activityStore';
 const App = () => {
 
   const activityStore = useContext(ActivityStore);
-
   const [activities, setActivities] = useState<IActivity[]>([]);
   const [selectedActivity, setSelectActivity] = useState<IActivity | null>(null);
 
@@ -32,15 +31,10 @@ const App = () => {
   }
 
   useEffect(() => {
-    agent.Activities.list()
-      .then((response) => {
-        setActivities(response);
-      }).then(() => {
-        setLoading(false);
-      });
-  }, []);
+    activityStore.loadActivities();
+  }, [activityStore]);
 
-  if(loading) return <LoadingComponent content="loading appication..."/>
+  if(activityStore.loadingInitial) return <LoadingComponent content="loading appication..."/>
 
   const handleCreateActivity = (activity: IActivity) => {
     setSubmitting(true);
@@ -73,11 +67,10 @@ const App = () => {
     <Fragment>
       <NavBar openCreateForm={handleOpenCreateForm} />
       <Container style={{ marginTop: "7em" }}>
-        <ActivityDashboard
-          activities={activities}
+         <ActivityDashboard
+          activities={activityStore.activities}
           selectActivity={handleSelectActivity}
-          selectedActivity={selectedActivity}
-          editMode={editMode}
+      
           setEditMode={setEditMode}
           setSelectActivity={setSelectActivity}
           createActivity={handleCreateActivity}
