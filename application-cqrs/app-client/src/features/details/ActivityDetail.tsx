@@ -1,6 +1,5 @@
 import React, { useContext } from "react";
-import { Icon, Image, Card, Button } from "semantic-ui-react";
-import { IActivity } from "../../models/IActivity";
+import { Image, Card, Button } from "semantic-ui-react";
 import ActivityStore from "../../app/stores/activityStore"
 import { observer } from "mobx-react-lite";
 
