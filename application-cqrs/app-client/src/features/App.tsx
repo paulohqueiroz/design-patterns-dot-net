@@ -28,23 +28,6 @@ const App = () => {
 
   if(activityStore.loadingInitial) return <LoadingComponent content="loading appication..."/>
 
-  const handleCreateActivity = (activity: IActivity) => {
-    setSubmitting(true);
-    agent.Activities.create(activity).then(()=>{
-      setActivities([...activities, activity]);
-      setSelectActivity(activity);
-      setEditMode(false);
-    }).then(()=> setSubmitting(false));   
-  }
-
-  const handleEditActivity = (activity: IActivity) => {
-    agent.Activities.update(activity).then(()=>{
-      setActivities([...activities.filter(a => a.Id !== activity.Id), activity])
-      setSelectActivity(activity);
-      setEditMode(false);
-    }).then(()=> setSubmitting(false));    
-  }
-
   const handleDeleteActivity = (event: SyntheticEvent<HTMLButtonElement>,id: string) => {
  
     setSubmitting(true);
@@ -61,9 +44,6 @@ const App = () => {
       <Container style={{ marginTop: "7em" }}>
          <ActivityDashboard
           activities={activityStore.activities}
-          setEditMode={setEditMode}
-          setSelectActivity={setSelectActivity}
-          editActivity={handleEditActivity}
           deleteActivity={handleDeleteActivity}
           target={target}
           submitting={submitting}
