@@ -1,4 +1,4 @@
-import { observable, action, computed } from "mobx";
+import { observable, action, computed, runInAction } from "mobx";
 import { createContext, SyntheticEvent } from "react";
 import { IActivity } from "../../models/IActivity";
 import agent from "../services/agent";
@@ -7,11 +7,10 @@ class ActivityStore {
     @observable activities: IActivity[] = [];
     @observable loadingInitial = false;
     @observable submitting = false;
-    @observable selectedActivity: IActivity | undefined;
+    @observable activity: IActivity | undefined;
     @observable editMode = false;
     @observable activityRegistry = new Map();
     @observable target = '';
-
 
     @computed get activitiesByDate() {
         return Array.from(this.activityRegistry.values()).sort((a,b) => Date.parse(a.Date) - Date.parse(b.Date));
@@ -31,24 +30,22 @@ class ActivityStore {
     }
 
     @action selectActivity = (id: string) => {
-        this.selectedActivity =  this.activityRegistry.get(id);
+        this.activity =  this.activityRegistry.get(id);
         this.editMode = false;
     }
 
     @action openEditForm = (Id: string) => {
-        this.selectedActivity = this.activityRegistry.get(Id);
+        this.activity = this.activityRegistry.get(Id);
         this.editMode = true;
     }
 
     @action cancelSelectedActivity = () => {
-        this.selectedActivity = undefined;
+        this.activity = undefined;
     }
-
     
     @action cancelFormOpen= () => {
        this.editMode = false;
     }
-
 
     @action createActivity = (activity: IActivity) => {
         this.submitting = true;
@@ -68,11 +65,10 @@ class ActivityStore {
         .then(() => {
             this.activityRegistry.set(activity.Id, activity);
             this.editMode = false;
-            this.selectedActivity = activity;
+            this.activity = activity;
         })
         .finally(() => this.submitting = false);
     }
-
 
     @action deleteActivity = (event: SyntheticEvent<HTMLButtonElement>, Id: string)  => {
       this.submitting = true;
@@ -89,8 +85,35 @@ class ActivityStore {
 
     @action openCreateForm = () => {
         this.editMode = true;
-        this.selectedActivity = undefined;
+        this.activity = undefined;
     }
+
+    @action loadActivity = async (Id: string) => {
+        let activity  = this.getActivity(Id);
+        if(activity) {
+            this.activity = activity;
+        } else {
+            this.loadingInitial = true;
+            try {
+                activity = await agent.Activities.details(Id);
+                runInAction('getting activity', () => {
+                    this.activity = activity;
+                    this.loadingInitial = false;
+                })
+            } catch (error) {
+                runInAction('getting activity error', () => {
+                    this.loadingInitial = false;
+                })
+                console.log(error);
+            }
+
+        }
+    }
+
+    getActivity = (Id: string) =>{
+       return this.activityRegistry.get(Id);
+    }
+
 }
 
 export default createContext(new ActivityStore());
