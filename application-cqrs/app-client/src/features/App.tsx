@@ -26,7 +26,7 @@ const App = () => {
       <NavBar />
       <Container style={{ marginTop: "7em" }}>
         <Route exact path="/"         component={Home} />
-        <Route path="/activities/:id" component={ActivityDetail} />
+        <Route exact path="/activities/:Id" component={ActivityDetail} />
         <Route path="/createActivity" component={ActivityForm} />
         <Route path="/activityList" component={ActivityDashboard} />
       </Container>

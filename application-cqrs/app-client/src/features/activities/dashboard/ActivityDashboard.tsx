@@ -17,17 +17,7 @@ const ActivityDashboard = () => {
                 <ActivityList/>
             </Grid.Column>
             <Grid.Column width={6}>
-                {activity &&
-                    !editMode &&
-                    <ActivityDetail />
-                }
-                {editMode &&
-                    <ActivityForm
-                        key={activity?.Id}
-                        activity={activity!}
-                        submitting={submitting}
-                    />
-                }
+              <h2>activity filters</h2>
             </Grid.Column>
         </Grid>
     );
